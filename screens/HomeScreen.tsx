@@ -18,6 +18,7 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import Header from '../components/Header';
+import { animalCrossingMapStyle } from '../src/utils/mapStyles';
 import '../global.css';
 import { 
   subscribeToNearbyStamps, 
@@ -381,15 +382,22 @@ export default function HomeScreen() {
       <ExpoStatusBar style="dark" />
       <Header title="Trail Map" />
       
-      <MapView
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-        initialRegion={region}
-        region={region}
-        showsUserLocation={true}
-        showsMyLocationButton={true}
-        mapType="terrain"
-      >
+      <View style={styles.mapContainer}>
+        <MapView
+          style={styles.map}
+          provider={PROVIDER_GOOGLE}
+          initialRegion={region}
+          region={region}
+          showsUserLocation={true}
+          showsMyLocationButton={true}
+          mapType="standard"
+          customMapStyle={animalCrossingMapStyle}
+          pitchEnabled={false}
+          rotateEnabled={false}
+          showsCompass={false}
+          showsScale={false}
+          toolbarEnabled={false}
+        >
         {/* Stamp markers */}
         {stamps.map((stamp) => {
           const scale = markerAnimations.current[stamp.id] || new Animated.Value(1);
@@ -433,7 +441,8 @@ export default function HomeScreen() {
             </Marker>
           );
         })}
-      </MapView>
+        </MapView>
+      </View>
       
       {/* Info Card */}
       <View className="absolute top-24 left-4 right-4">
@@ -618,8 +627,16 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  mapContainer: {
+    flex: 1,
+    borderRadius: 0,
+    overflow: 'hidden',
+    backgroundColor: '#E8F5E9', // Soft green background for map edges
+  },
   map: {
     flex: 1,
+    width: '100%',
+    height: '100%',
   },
   fab: {
     position: 'absolute',
