@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Header from '../components/Header';
 import '../global.css';
 
 export default function LeaderboardScreen() {
@@ -21,37 +22,35 @@ export default function LeaderboardScreen() {
   return (
     <View className="flex-1 bg-ac-cream">
       <ExpoStatusBar style="dark" />
+      <Header title="Leaderboard" />
       
-      <ScrollView className="flex-1 p-6">
+      <ScrollView className="flex-1 p-6" showsVerticalScrollIndicator={false}>
         <View className="mb-6">
-          <Text className="text-3xl font-bold text-ac-brown-dark mb-2">
-            Leaderboard
-          </Text>
-          <Text className="text-ac-brown text-base">
-            Top trail explorers
+          <Text style={styles.subtitle}>
+            Top trail explorers 🌟
           </Text>
         </View>
 
         {leaderboardData.map((item, index) => (
           <View
             key={index}
-            className="bg-white rounded-2xl p-4 mb-3 shadow-sm flex-row items-center"
+            style={styles.card}
           >
-            <View className="w-12 h-12 rounded-full bg-ac-yellow-light items-center justify-center mr-4">
+            <View style={styles.rankCircle}>
               {item.icon ? (
-                <MaterialCommunityIcons name={item.icon as any} size={24} color="#FFC107" />
+                <MaterialCommunityIcons name={item.icon as any} size={28} color="#FFC107" />
               ) : (
-                <Text className="text-ac-brown-dark font-bold text-lg">
+                <Text style={styles.rankText}>
                   {item.rank}
                 </Text>
               )}
             </View>
             
-            <View className="flex-1">
-              <Text className="text-lg font-semibold text-ac-brown-dark">
+            <View className="flex-1 ml-4">
+              <Text style={styles.nameText}>
                 {item.name}
               </Text>
-              <Text className="text-ac-brown text-sm">
+              <Text style={styles.scoreText}>
                 {item.score} points
               </Text>
             </View>
@@ -62,3 +61,52 @@ export default function LeaderboardScreen() {
   );
 }
 
+const styles = StyleSheet.create({
+  subtitle: {
+    fontSize: 18,
+    color: '#A1887F',
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#F5F5F5',
+  },
+  rankCircle: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#FFF9C4',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 3,
+    borderColor: '#FFE082',
+  },
+  rankText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#6D4C41',
+  },
+  nameText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#6D4C41',
+    marginBottom: 4,
+  },
+  scoreText: {
+    fontSize: 16,
+    color: '#A1887F',
+    fontWeight: '500',
+  },
+});

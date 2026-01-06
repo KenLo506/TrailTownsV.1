@@ -8,7 +8,7 @@
     
     "splash": {
       "resizeMode": "contain",
-      "backgroundColor": "#FFF8E7"
+      "backgroundColor": "#FFF8E1"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#FFF8E7"
+        "backgroundColor": "#FFF8E1"
       },
       "permissions": [
         "ACCESS_FINE_LOCATION",

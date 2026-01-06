@@ -21,9 +21,17 @@ module.exports = {
           DEFAULT: '#A1887F',
           dark: '#6D4C41',
         },
-        'ac-cream': '#FFF8E7',
+        'ac-cream': '#FFF8E1',
         'ac-sky': '#B3E5FC',
         'ac-pink': '#F8BBD0',
+      },
+      fontFamily: {
+        'quicksand': ['Quicksand-Regular', 'Quicksand-Bold', 'Quicksand-SemiBold'],
+        'nunito': ['Nunito-Regular', 'Nunito-Bold', 'Nunito-SemiBold'],
+      },
+      boxShadow: {
+        'soft': '0 4px 12px rgba(0, 0, 0, 0.08)',
+        'soft-lg': '0 8px 24px rgba(0, 0, 0, 0.12)',
       },
     },
   },

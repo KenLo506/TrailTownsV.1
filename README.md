@@ -81,8 +81,9 @@ The app includes a stamps system for marking interesting locations on trails.
 - **Nearby Stamps**: Automatically fetches stamps within 10km radius
 - **Custom Markers**: Stamps appear as custom markers on the map with type badges
 - **Stamp Details**: Tap any stamp marker to see details in a modal
-- **Like/Dislike**: Interactive buttons with optimistic UI updates
+- **Like/Dislike**: Interactive buttons with optimistic UI updates and user vote tracking
 - **Add Stamps**: Floating action button to create new stamps at your location
+- **Delete Stamps**: Delete button in stamp detail modal
 - **Optimistic UI**: Instant feedback with automatic rollback on errors
 
 **Stamp Schema:**
@@ -104,4 +105,24 @@ The app includes a stamps system for marking interesting locations on trails.
 - **IMPORTANT**: You must deploy the Firestore rules to Firebase for stamps to work
 - See `DEPLOY_RULES.md` for deployment instructions
 - Update `firestore.rules` to add authentication restrictions for production
+
+## Steps & Collectibles Feature
+
+The app tracks steps and unlocks collectible badges at milestones.
+
+**Features:**
+- **Step Tracking**: Tracks total steps in Firestore (`/users/{userId}/steps`)
+- **Steps Display**: Shows current step count in Profile screen
+- **Collectibles**: Unlock badges at milestones (1000, 5000, 10000, 25000 steps)
+- **Unlock Popup**: Animated modal appears when collectible is unlocked
+- **Mock Step Counter**: Currently uses mock counter for development
+  - **Production**: Integrate with HealthKit (iOS) or Google Fit (Android)
+
+**Collectibles:**
+- 🌸 Spring Flower Badge (1,000 steps)
+- 🌲 Trail Explorer Badge (5,000 steps)
+- ⛰️ Mountain Climber Badge (10,000 steps)
+- 🦌 Forest Guardian Badge (25,000 steps)
+
+**Note**: Step counting currently uses a mock implementation that increments steps every 5 seconds for testing. For production, integrate with device health APIs.
 

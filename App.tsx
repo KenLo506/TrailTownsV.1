@@ -12,6 +12,8 @@ import ProfileScreen from './screens/ProfileScreen';
 // Initialize Firebase
 import './src/services/firebase';
 import { db, auth } from './src/services/firebase';
+import { initializeCollectibles } from './src/services/collectibles';
+import { ensureAuthenticated } from './src/services/auth';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +24,16 @@ export default function App() {
     console.log('📦 Firestore instance:', db ? '✅ Connected' : '❌ Not connected');
     console.log('🔐 Auth instance:', auth ? '✅ Connected' : '❌ Not connected');
     console.log('✅ Firebase is ready to use!');
+    
+    // Ensure user is authenticated (anonymous auth)
+    ensureAuthenticated().then((user) => {
+      console.log('✅ User authenticated:', user.uid);
+    }).catch((error) => {
+      console.error('❌ Authentication error:', error);
+    });
+    
+    // Initialize collectibles
+    initializeCollectibles();
   }, []);
 
   return (
@@ -33,14 +45,17 @@ export default function App() {
           tabBarActiveTintColor: '#6BA66B',
           tabBarInactiveTintColor: '#A1887F',
           tabBarStyle: {
-            backgroundColor: '#FFF8E7',
+            backgroundColor: '#FFF8E1',
             borderTopWidth: 0,
             elevation: 0,
-            shadowOpacity: 0,
-            height: 60,
-            paddingBottom: 8,
-            paddingTop: 8,
-            borderRadius: 20,
+            height: 70,
+            paddingBottom: 12,
+            paddingTop: 12,
+            borderRadius: 0,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 8,
           },
           tabBarLabelStyle: {
             fontSize: 12,

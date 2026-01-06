@@ -7,11 +7,16 @@ import {
   onSnapshot, 
   updateDoc, 
   doc,
+  deleteDoc,
+  runTransaction,
+  getDoc,
+  setDoc,
   Timestamp,
   GeoPoint,
   Unsubscribe
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { ensureAuthenticated } from './auth';
 
 export interface Stamp {
   id: string;
@@ -22,7 +27,10 @@ export interface Stamp {
   likes: number;
   dislikes: number;
   createdAt: Timestamp;
+  creatorId?: string;
 }
+
+export type UserVote = 'like' | 'dislike' | null;
 
 export interface CreateStampData {
   type: string;
@@ -150,6 +158,7 @@ export const subscribeToNearbyStamps = (
  */
 export const createStamp = async (stampData: CreateStampData): Promise<string> => {
   try {
+    const userId = await getUserId();
     const docRef = await addDoc(collection(db, 'stamps'), {
       type: stampData.type,
       title: stampData.title,
@@ -158,6 +167,7 @@ export const createStamp = async (stampData: CreateStampData): Promise<string> =
       likes: 0,
       dislikes: 0,
       createdAt: Timestamp.now(),
+      creatorId: userId,
     });
     
     return docRef.id;
@@ -168,31 +178,177 @@ export const createStamp = async (stampData: CreateStampData): Promise<string> =
 };
 
 /**
- * Like a stamp (optimistic update)
+ * Get or create a user ID (ensures authentication)
  */
-export const likeStamp = async (stampId: string, currentLikes: number): Promise<void> => {
+const getUserId = async (): Promise<string> => {
+  const user = await ensureAuthenticated();
+  return user.uid;
+};
+
+/**
+ * Get user's vote for a stamp
+ */
+export const getUserVote = async (stampId: string): Promise<UserVote> => {
   try {
+    const userId = await getUserId();
+    const userVotesRef = doc(db, 'users', userId);
+    const userVotesDoc = await getDoc(userVotesRef);
+    
+    if (!userVotesDoc.exists()) {
+      return null;
+    }
+    
+    const data = userVotesDoc.data();
+    const likedStamps = data.likedStamps || {};
+    
+    if (likedStamps[stampId] === 'like') return 'like';
+    if (likedStamps[stampId] === 'dislike') return 'dislike';
+    return null;
+  } catch (error) {
+    console.error('Error getting user vote:', error);
+    return null;
+  }
+};
+
+/**
+ * Toggle like on a stamp using transaction
+ */
+export const toggleLikeStamp = async (stampId: string): Promise<{ newLikes: number; newDislikes: number; userVote: UserVote }> => {
+  try {
+    const userId = await getUserId();
     const stampRef = doc(db, 'stamps', stampId);
-    await updateDoc(stampRef, {
-      likes: currentLikes + 1,
+    const userVotesRef = doc(db, 'users', userId);
+    
+    return await runTransaction(db, async (transaction) => {
+      // Get current stamp data
+      const stampDoc = await transaction.get(stampRef);
+      if (!stampDoc.exists()) {
+        throw new Error('Stamp does not exist');
+      }
+      
+      const stampData = stampDoc.data();
+      const currentLikes = stampData.likes || 0;
+      const currentDislikes = stampData.dislikes || 0;
+      
+      // Get user's current vote
+      const userVotesDoc = await transaction.get(userVotesRef);
+      const likedStamps = userVotesDoc.exists() ? (userVotesDoc.data().likedStamps || {}) : {};
+      const currentVote: UserVote = likedStamps[stampId] || null;
+      
+      let newLikes = currentLikes;
+      let newDislikes = currentDislikes;
+      let newVote: UserVote;
+      
+      if (currentVote === 'like') {
+        // User already liked, so undo the like
+        newLikes = Math.max(0, currentLikes - 1);
+        newVote = null;
+        delete likedStamps[stampId];
+      } else {
+        // User didn't like or disliked, so add like
+        newLikes = currentLikes + 1;
+        newVote = 'like';
+        likedStamps[stampId] = 'like';
+        
+        // If user previously disliked, remove that dislike
+        if (currentVote === 'dislike') {
+          newDislikes = Math.max(0, currentDislikes - 1);
+        }
+      }
+      
+      // Update stamp
+      transaction.update(stampRef, {
+        likes: newLikes,
+        dislikes: newDislikes,
+      });
+      
+      // Update user votes
+      transaction.set(userVotesRef, {
+        likedStamps,
+      }, { merge: true });
+      
+      return { newLikes, newDislikes, userVote: newVote };
     });
   } catch (error) {
-    console.error('Error liking stamp:', error);
+    console.error('Error toggling like:', error);
     throw error;
   }
 };
 
 /**
- * Dislike a stamp (optimistic update)
+ * Toggle dislike on a stamp using transaction
  */
-export const dislikeStamp = async (stampId: string, currentDislikes: number): Promise<void> => {
+export const toggleDislikeStamp = async (stampId: string): Promise<{ newLikes: number; newDislikes: number; userVote: UserVote }> => {
   try {
+    const userId = await getUserId();
     const stampRef = doc(db, 'stamps', stampId);
-    await updateDoc(stampRef, {
-      dislikes: currentDislikes + 1,
+    const userVotesRef = doc(db, 'users', userId);
+    
+    return await runTransaction(db, async (transaction) => {
+      // Get current stamp data
+      const stampDoc = await transaction.get(stampRef);
+      if (!stampDoc.exists()) {
+        throw new Error('Stamp does not exist');
+      }
+      
+      const stampData = stampDoc.data();
+      const currentLikes = stampData.likes || 0;
+      const currentDislikes = stampData.dislikes || 0;
+      
+      // Get user's current vote
+      const userVotesDoc = await transaction.get(userVotesRef);
+      const likedStamps = userVotesDoc.exists() ? (userVotesDoc.data().likedStamps || {}) : {};
+      const currentVote: UserVote = likedStamps[stampId] || null;
+      
+      let newLikes = currentLikes;
+      let newDislikes = currentDislikes;
+      let newVote: UserVote;
+      
+      if (currentVote === 'dislike') {
+        // User already disliked, so undo the dislike
+        newDislikes = Math.max(0, currentDislikes - 1);
+        newVote = null;
+        delete likedStamps[stampId];
+      } else {
+        // User didn't dislike or liked, so add dislike
+        newDislikes = currentDislikes + 1;
+        newVote = 'dislike';
+        likedStamps[stampId] = 'dislike';
+        
+        // If user previously liked, remove that like
+        if (currentVote === 'like') {
+          newLikes = Math.max(0, currentLikes - 1);
+        }
+      }
+      
+      // Update stamp
+      transaction.update(stampRef, {
+        likes: newLikes,
+        dislikes: newDislikes,
+      });
+      
+      // Update user votes
+      transaction.set(userVotesRef, {
+        likedStamps,
+      }, { merge: true });
+      
+      return { newLikes, newDislikes, userVote: newVote };
     });
   } catch (error) {
-    console.error('Error disliking stamp:', error);
+    console.error('Error toggling dislike:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a stamp
+ */
+export const deleteStamp = async (stampId: string): Promise<void> => {
+  try {
+    const stampRef = doc(db, 'stamps', stampId);
+    await deleteDoc(stampRef);
+  } catch (error) {
+    console.error('Error deleting stamp:', error);
     throw error;
   }
 };
