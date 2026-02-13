@@ -3,6 +3,7 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Header from '../components/Header';
+import TrailIcon from '../components/TrailIcon';
 import '../global.css';
 
 export default function LeaderboardScreen() {
@@ -38,7 +39,7 @@ export default function LeaderboardScreen() {
           >
             <View style={styles.rankCircle}>
               {item.icon ? (
-                <MaterialCommunityIcons name={item.icon as any} size={28} color="#FFC107" />
+                <TrailIcon name="trophy" size={28} color="#FFC107" />
               ) : (
                 <Text style={styles.rankText}>
                   {item.rank}

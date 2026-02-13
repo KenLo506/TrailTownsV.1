@@ -14,10 +14,11 @@ import {
   Animated
 } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import Header from '../components/Header';
+import TrailIcon from '../components/TrailIcon';
 import { animalCrossingMapStyle } from '../src/utils/mapStyles';
 import '../global.css';
 import { 
@@ -329,7 +330,7 @@ export default function HomeScreen() {
     return (
       <View className="flex-1 bg-ac-cream items-center justify-center">
         <ExpoStatusBar style="dark" />
-        <Header title="Trail Map" />
+        <Header useLogoImage={true} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#8FD08F" />
           <Text style={styles.loadingText}>
@@ -344,7 +345,7 @@ export default function HomeScreen() {
     return (
       <View className="flex-1 bg-ac-cream">
         <ExpoStatusBar style="dark" />
-        <Header title="Trail Map" />
+        <Header useLogoImage={true} />
         <View className="flex-1 items-center justify-center p-6">
           <View style={styles.errorCard}>
             <MaterialCommunityIcons name="alert-circle" size={48} color="#A1887F" />
@@ -364,7 +365,7 @@ export default function HomeScreen() {
     return (
       <View className="flex-1 bg-ac-cream">
         <ExpoStatusBar style="dark" />
-        <Header title="Trail Map" />
+        <Header useLogoImage={true} />
         <View className="flex-1 items-center justify-center p-6">
           <View style={styles.errorCard}>
             <MaterialCommunityIcons name="map-marker-off" size={48} color="#A1887F" />
@@ -385,7 +386,6 @@ export default function HomeScreen() {
       <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
-          provider={PROVIDER_GOOGLE}
           initialRegion={region}
           region={region}
           showsUserLocation={true}
@@ -418,8 +418,8 @@ export default function HomeScreen() {
                   },
                 ]}
               >
-                <MaterialCommunityIcons 
-                  name="map-marker" 
+                <TrailIcon 
+                  name="signpost" 
                   size={36} 
                   color="#FFC107" 
                 />
@@ -448,7 +448,7 @@ export default function HomeScreen() {
       <View className="absolute top-24 left-4 right-4">
         <View style={styles.infoCard}>
           <View style={styles.infoIconCircle}>
-            <MaterialCommunityIcons name="map-marker-multiple" size={28} color="#8FD08F" />
+            <TrailIcon name="map" size={28} color="#8FD08F" />
           </View>
           <View className="ml-4 flex-1">
             <Text style={styles.infoTitle}>
@@ -467,7 +467,7 @@ export default function HomeScreen() {
         onPress={() => setShowAddStampModal(true)}
         activeOpacity={0.8}
       >
-        <MaterialCommunityIcons name="plus" size={32} color="#FFFFFF" />
+        <TrailIcon name="plus" size={32} color="#FFFFFF" />
       </TouchableOpacity>
 
       {/* Stamp Detail Modal */}

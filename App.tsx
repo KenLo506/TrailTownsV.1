@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import TrailIcon from './components/TrailIcon';
 import './global.css';
 
 import HomeScreen from './screens/HomeScreen';
@@ -68,7 +69,7 @@ export default function App() {
           component={HomeScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="map" size={size} color={color} />
+              <TrailIcon name="map" size={size} color={color} />
             ),
           }}
         />
@@ -77,7 +78,7 @@ export default function App() {
           component={LeaderboardScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="trophy" size={size} color={color} />
+              <TrailIcon name="trophy" size={size} color={color} />
             ),
           }}
         />
@@ -86,7 +87,7 @@ export default function App() {
           component={ProfileScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="account" size={size} color={color} />
+              <TrailIcon name="fox-head" size={size} color={color} />
             ),
           }}
         />
