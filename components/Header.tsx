@@ -1,18 +1,39 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Text, Image, StyleSheet } from 'react-native';
+import TrailIcon from './TrailIcon';
 
 interface HeaderProps {
   title?: string;
   showLogo?: boolean;
+  useLogoImage?: boolean; // When true, shows logo image instead of icon + title
 }
 
-export default function Header({ title = 'TrailTowns', showLogo = true }: HeaderProps) {
+const logoSource = require('../assets/icons/trailstowns-logo.png');
+
+export default function Header({ 
+  title = 'TrailTowns', 
+  showLogo = true,
+  useLogoImage = false 
+}: HeaderProps) {
+  // If using logo image, show only the logo (it contains text)
+  if (useLogoImage && showLogo) {
+    return (
+      <View style={styles.header}>
+        <Image 
+          source={logoSource} 
+          style={styles.logoImage}
+          resizeMode="contain"
+        />
+      </View>
+    );
+  }
+
+  // Otherwise show icon + title (for other screens)
   return (
     <View style={styles.header}>
       {showLogo && (
         <View style={styles.logoContainer}>
-          <MaterialCommunityIcons name="tree" size={32} color="#8FD08F" />
+          <TrailIcon name="tree" size={32} color="#8FD08F" />
         </View>
       )}
       <Text style={styles.title}>{title}</Text>
@@ -44,6 +65,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
+  },
+  logoImage: {
+    height: 60,
+    width: '80%',
+    maxWidth: 300,
   },
   title: {
     fontSize: 28,

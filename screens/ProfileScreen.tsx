@@ -3,6 +3,7 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-nati
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Header from '../components/Header';
+import TrailIcon from '../components/TrailIcon';
 import CollectibleUnlockModal from '../components/CollectibleUnlockModal';
 import { 
   getStepCount, 
@@ -65,7 +66,7 @@ export default function ProfileScreen() {
       <ScrollView className="flex-1 p-6" showsVerticalScrollIndicator={false}>
         <View className="items-center mb-8">
           <View style={styles.avatarContainer}>
-            <MaterialCommunityIcons name="account" size={56} color="#6BA66B" />
+            <TrailIcon name="fox-head" size={56} color="#6BA66B" />
           </View>
           <Text style={styles.nameText}>
             Trail Explorer
@@ -78,7 +79,7 @@ export default function ProfileScreen() {
         {/* Steps Indicator */}
         <View style={styles.stepsCard}>
           <View style={styles.stepsHeader}>
-            <MaterialCommunityIcons name="walk" size={28} color="#8FD08F" />
+            <TrailIcon name="hiking-boot" size={28} color="#8FD08F" />
             <Text style={styles.stepsLabel}>Steps</Text>
           </View>
           <Text style={styles.stepsNumber}>{steps.toLocaleString()}</Text>
@@ -88,7 +89,7 @@ export default function ProfileScreen() {
         <View style={styles.card}>
           <View className="flex-row items-center mb-6">
             <View style={styles.iconCircle}>
-              <MaterialCommunityIcons name="star" size={24} color="#FFC107" />
+              <TrailIcon name="trophy" size={24} color="#FFC107" />
             </View>
             <Text style={styles.sectionTitle}>
               Stats
@@ -113,7 +114,7 @@ export default function ProfileScreen() {
 
         <TouchableOpacity style={styles.actionCard}>
           <View style={styles.iconCircle}>
-            <MaterialCommunityIcons name="map" size={24} color="#8FD08F" />
+            <TrailIcon name="map" size={24} color="#8FD08F" />
           </View>
           <Text style={styles.actionText}>
             My Trails
@@ -123,7 +124,7 @@ export default function ProfileScreen() {
 
         <TouchableOpacity style={styles.actionCard}>
           <View style={styles.iconCircle}>
-            <MaterialCommunityIcons name="cog" size={24} color="#A1887F" />
+            <TrailIcon name="gear" size={24} color="#A1887F" />
           </View>
           <Text style={styles.actionText}>
             Settings
